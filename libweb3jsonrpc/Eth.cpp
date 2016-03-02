@@ -548,7 +548,12 @@ Json::Value Eth::eth_compileSolidity(string const& _source)
 	catch (dev::Exception const& exception)
 	{
 		ostringstream error;
-		solidity::SourceReferenceFormatter::printExceptionInformation(error, exception, "Error", compiler);
+		solidity::SourceReferenceFormatter::printExceptionInformation(
+			error,
+			exception,
+			"Error",
+			[&](string const& _sourceName) -> solidity::Scanner const& { return compiler.scanner(_sourceName); }
+		);
 		cwarn << "Solidity compilation error: " << error.str();
 		return Json::Value(Json::objectValue);
 	}
